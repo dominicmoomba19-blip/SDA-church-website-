@@ -1928,9 +1928,11 @@ onSnapshot(collection(db, COLL), snap => {
 });
 
 /* ── Load orders from Firestore ── */
+let _ordersUpdating = false;
 onSnapshot(collection(db, ORDERS_COLL), snap => {
   ORDERS = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
-  // Refresh admin orders tab if open
+  // Don't re-render while a status update is in flight
+  if (_ordersUpdating) return;
   const tab = document.getElementById('tab-orders');
   if (tab && tab.style.display !== 'none') renderAdmOrders();
 });
@@ -2964,10 +2966,18 @@ window.filterOrders = function(btn, filter){
 
 window.admUpdateStatus = async function(id, status){
   try {
+    _ordersUpdating = true;
+    // Optimistically update local ORDERS so the UI reflects the change immediately
+    const idx = ORDERS.findIndex(o => o._id === id);
+    if (idx !== -1) ORDERS[idx].status = status;
+    renderAdmOrders();
     await updateDoc(doc(db, ORDERS_COLL, id), { status });
     toast(`✅ Status updated to ${STATUS_LABELS[status]||status}`);
   } catch(err){
     toast('❌ Failed: '+err.message);
+    renderAdmOrders(); // re-render to restore correct state on failure
+  } finally {
+    _ordersUpdating = false;
   }
 };
 
