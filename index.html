@@ -1833,6 +1833,15 @@ textarea.finp{min-height:100px;resize:vertical}
           <button class="ao-filter-btn" onclick="filterOrders(this,'archived')" id="ao-archived-btn">🗃️ Archived</button>
         </div>
         <p class="adm-prod-count" id="adm-orders-count"></p>
+        <div style="padding:0 16px 12px">
+          <button onclick="planDeliveryRoute()"
+            style="width:100%;background:linear-gradient(135deg,#15803d,#166534);color:#fff;
+                   border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;
+                   cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;
+                   justify-content:center;gap:8px">
+            🗺️ Plan Delivery Route
+          </button>
+        </div>
         <div id="adm-orders-list"><div class="ao-empty">Loading orders...</div></div>
       </div>
 
@@ -2930,7 +2939,7 @@ function renderAdmOrders() {
                 <option value="confirmed"   ${o.status==='confirmed'  ?'selected':''}>✅ Confirmed</option>
                 <option value="packing"     ${o.status==='packing'    ?'selected':''}>📦 Packing</option>
                 <option value="dispatched"  ${o.status==='dispatched' ?'selected':''}>🚚 Dispatched</option>
-                <option value="delivered"   >🎉 Delivered</option>
+                <option value="delivered"   ${o.status==='delivered'  ?'selected':''}>🎉 Delivered</option>
               </select>
               <button class="ao-nav" onclick="navigateToCustomer('${encodeURIComponent(o.address+', '+(o.area||'')+', '+o.town+', Zambia')}')">🗺️ Navigate</button>`
         }
@@ -2957,9 +2966,6 @@ window.admUpdateStatus = async function(id, status){
   try {
     await updateDoc(doc(db, ORDERS_COLL, id), { status });
     toast(`✅ Status updated to ${STATUS_LABELS[status]||status}`);
-    // Auto-open WhatsApp to notify customer
-    const order = ORDERS.find(o=>o._id===id);
-    if(order) notifyCustomer(order.phone, order.customerName, order.orderNum, status);
   } catch(err){
     toast('❌ Failed: '+err.message);
   }
@@ -3112,8 +3118,37 @@ renderTrackResult = function(order){
 };
 
 /* ════════════════════════════════
-   START
+   PLAN MULTI-STOP DELIVERY ROUTE
 ════════════════════════════════ */
+window.planDeliveryRoute = function(){
+  // Collect all active orders that need delivery (not delivered or archived)
+  const active = ORDERS.filter(o => !o.archived && o.status !== 'delivered');
+  if(!active.length){ toast('📭 No active orders to deliver'); return; }
+
+  const origin = encodeURIComponent('Kenneth Kaunda House, Cairo Road, Lusaka, Zambia');
+
+  if(active.length === 1){
+    // Single order — open direct navigation
+    const addr = [active[0].address, active[0].area, active[0].town, 'Zambia'].filter(Boolean).join(', ');
+    window.open(`https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${encodeURIComponent(addr)}&travelmode=driving`, '_blank');
+    return;
+  }
+
+  // Multiple orders — build waypoints (Google Maps supports up to 8 waypoints free)
+  const stops = active.slice(0, 9); // max 9 stops (origin + 8 waypoints + last as destination)
+  const destination = [stops[stops.length-1].address, stops[stops.length-1].area, stops[stops.length-1].town, 'Zambia'].filter(Boolean).join(', ');
+  const waypoints = stops.slice(0, -1).map(o =>
+    [o.address, o.area, o.town, 'Zambia'].filter(Boolean).join(', ')
+  ).join('|');
+
+  const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${encodeURIComponent(destination)}&waypoints=${encodeURIComponent(waypoints)}&travelmode=driving`;
+  window.open(url, '_blank');
+
+  if(active.length > 9) toast(`⚠️ Showing first 9 of ${active.length} orders — deliver in batches`);
+  else toast(`🗺️ Route planned for ${active.length} deliveries`);
+};
+
+
 go('home');
 </script>
 </body>
