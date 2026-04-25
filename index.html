@@ -1930,8 +1930,8 @@ onSnapshot(collection(db, COLL), snap => {
 /* ── Load orders from Firestore ── */
 let _ordersUpdating = false;
 onSnapshot(collection(db, ORDERS_COLL), snap => {
-  ORDERS = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
-  // Don't re-render while a status update is in flight
+  const newOrders = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+  ORDERS = newOrders;
   if (_ordersUpdating) return;
   const tab = document.getElementById('tab-orders');
   if (tab && tab.style.display !== 'none') renderAdmOrders();
@@ -2921,31 +2921,43 @@ function renderAdmOrders() {
       ? `<div class="ao-notes"><span class="ao-notes-label">📝 Note:</span>${o.notes}</div>`
       : '';
     const isArchived = o.archived===true;
-    return `<div class="ao-item${isArchived?' archived-item':''}">
+    const curStatus  = o.status || 'pending';
+    const curIdx     = STATUS_ORDER.indexOf(curStatus);
+    const prevStatus = curIdx > 0 ? STATUS_ORDER[curIdx-1] : null;
+    const nextStatus = curIdx < STATUS_ORDER.length-1 ? STATUS_ORDER[curIdx+1] : null;
+
+    const statusControls = isArchived
+      ? `<div class="ao-delivered-lock" style="opacity:.6">🗃️ Archived</div>
+         <button class="ao-archive-btn" style="background:#e0f2fe;color:#0369a1" onclick="admUnarchiveOrder('${o._id}')">↩️ Restore</button>`
+      : curStatus === 'delivered'
+        ? `<div class="ao-delivered-lock">🎉 Delivered</div>
+           <button class="ao-archive-btn" onclick="admArchiveOrder('${o._id}')">🗃️ Archive</button>`
+        : `<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+             ${prevStatus ? `<button onclick="admUpdateStatus('${o._id}','${prevStatus}')"
+               style="width:30px;height:30px;border-radius:8px;border:1.5px solid var(--border);
+                      background:var(--bg);font-size:14px;cursor:pointer;flex-shrink:0">◀</button>` : '<span style="width:30px"></span>'}
+             <div style="flex:1;text-align:center;font-size:12px;font-weight:800;
+                         padding:6px 4px;border-radius:8px;background:var(--bg);
+                         border:1.5px solid var(--border);color:var(--ink)">
+               ${STATUS_LABELS[curStatus]||curStatus}
+             </div>
+             ${nextStatus ? `<button onclick="admUpdateStatus('${o._id}','${nextStatus}')"
+               style="width:30px;height:30px;border-radius:8px;border:1.5px solid var(--navy);
+                      background:var(--navy);color:#fff;font-size:14px;cursor:pointer;flex-shrink:0">▶</button>` : '<span style="width:30px"></span>'}
+           </div>
+           <button class="ao-nav" onclick="navigateToCustomer('${encodeURIComponent(o.address+', '+(o.area||'')+', '+o.town+', Zambia')}')">🗺️ Navigate</button>`;
+
+    return `<div class="ao-item${isArchived?' archived-item':''}" data-id="${o._id}">
       <div class="ao-info">
-        <div class="ao-onum">${o.orderNum} <span class="ao-badge ${o.status||'pending'}">${STATUS_LABELS[o.status]||o.status}</span></div>
+        <div class="ao-onum">${o.orderNum} <span class="ao-badge ${curStatus}">${STATUS_LABELS[curStatus]||curStatus}</span></div>
         <div class="ao-meta">${o.customerName} · ${o.phone}<br>${o.town}${o.area?', '+o.area:''} · ${dateStr} · ${o.payment}</div>
         <div class="ao-items-str">${itemsStr}</div>
         ${notesHtml}
       </div>
       <div class="ao-right">
         <div class="ao-total">K${o.total?.toLocaleString()||0}</div>
-        ${isArchived
-          ? `<div class="ao-delivered-lock" style="opacity:.6">🗃️ Archived</div>
-             <button class="ao-archive-btn" style="background:#e0f2fe;color:#0369a1" onclick="admUnarchiveOrder('${o._id}')">↩️ Restore</button>`
-          : o.status==='delivered'
-            ? `<div class="ao-delivered-lock">🎉 Delivered</div>
-               <button class="ao-archive-btn" onclick="admArchiveOrder('${o._id}')">🗃️ Archive</button>`
-            : `<select class="ao-sel" onchange="admUpdateStatus('${o._id}',this.value)">
-                <option value="pending"     ${o.status==='pending'    ?'selected':''}>🕐 Pending</option>
-                <option value="confirmed"   ${o.status==='confirmed'  ?'selected':''}>✅ Confirmed</option>
-                <option value="packing"     ${o.status==='packing'    ?'selected':''}>📦 Packing</option>
-                <option value="dispatched"  ${o.status==='dispatched' ?'selected':''}>🚚 Dispatched</option>
-                <option value="delivered"   ${o.status==='delivered'  ?'selected':''}>🎉 Delivered</option>
-              </select>
-              <button class="ao-nav" onclick="navigateToCustomer('${encodeURIComponent(o.address+', '+(o.area||'')+', '+o.town+', Zambia')}')">🗺️ Navigate</button>`
-        }
-        ${!isArchived ? `<button class="ao-wa" onclick="notifyCustomer('${o.phone}','${o.customerName}','${o.orderNum}','${o.status||'pending'}')">💬 Notify</button>` : ''}
+        ${statusControls}
+        ${!isArchived ? `<button class="ao-wa" onclick="notifyCustomer('${o.phone}','${o.customerName}','${o.orderNum}','${curStatus}')">💬 Notify</button>` : ''}
       </div>
     </div>`;
   }).join('');
@@ -2967,7 +2979,6 @@ window.filterOrders = function(btn, filter){
 window.admUpdateStatus = async function(id, status){
   try {
     _ordersUpdating = true;
-    // Optimistically update local ORDERS so the UI reflects the change immediately
     const idx = ORDERS.findIndex(o => o._id === id);
     if (idx !== -1) ORDERS[idx].status = status;
     renderAdmOrders();
@@ -2975,9 +2986,9 @@ window.admUpdateStatus = async function(id, status){
     toast(`✅ Status updated to ${STATUS_LABELS[status]||status}`);
   } catch(err){
     toast('❌ Failed: '+err.message);
-    renderAdmOrders(); // re-render to restore correct state on failure
+    renderAdmOrders();
   } finally {
-    _ordersUpdating = false;
+    setTimeout(() => { _ordersUpdating = false; }, 1000);
   }
 };
 
