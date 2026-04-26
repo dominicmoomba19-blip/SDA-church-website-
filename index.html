@@ -376,6 +376,13 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none}
 }
 .p-add:hover{background:linear-gradient(135deg,var(--navy3),var(--navy2));transform:scale(1.04)}
 .p-add.on{background:linear-gradient(135deg,#15803d,#166534)}
+.p-enquire{
+  width:100%;margin-top:8px;background:linear-gradient(135deg,#1a7a3c,#25a352);
+  color:#fff;border:none;border-radius:8px;padding:7px 10px;font-size:10.5px;
+  font-weight:800;cursor:pointer;transition:all .2s;letter-spacing:.2px;
+  font-family:inherit;
+}
+.p-enquire:hover{opacity:.88;transform:scale(1.02)}
 
 /* ─── SHOP FILTERS ─── */
 .filters{
@@ -1963,6 +1970,7 @@ function card(p) {
         </div>
         <button class="p-add ${inCart?'on':''}" onclick="addCart(event,'${p._id}')">${inCart?'✓':'Add'}</button>
       </div>
+      <button class="p-enquire" onclick="enquireProduct(event,'${p.name}','${p.price}')">💬 Enquire on WhatsApp</button>
     </div>
   </div>`;
 }
@@ -2476,6 +2484,12 @@ document.getElementById('modal-wrap').addEventListener('click',function(e){ if(e
    CONTACT
 ════════════════════════════════ */
 window.openWA  = function(){ window.open(`https://wa.me/${adminWA}`,'_blank'); };
+
+window.enquireProduct = function(e, name, price){
+  e.stopPropagation();
+  const msg = encodeURIComponent(`Hi Billy Pro Sport! 👋\nI'm interested in the *${name}* (K${price}). Could you please give me more details?`);
+  window.open(`https://wa.me/${adminWA}?text=${msg}`, '_blank');
+};
 window.openMap = function(){ window.open('https://maps.google.com/?q=Kenneth+Kaunda+House+Cairo+Road+Lusaka+Zambia','_blank'); };
 window.submitForm = function(){
   const name    = document.querySelector('.cform input[type=text]')?.value.trim();
