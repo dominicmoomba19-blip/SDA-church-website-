@@ -632,17 +632,32 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none}
   font-size:16px;font-weight:800;padding-top:10px;border-top:2px solid var(--border);
 }
 .live-map-wrap{
-  margin-top:16px;border-radius:12px;overflow:hidden;
+  margin-top:20px;border-radius:16px;overflow:hidden;
   border:1px solid var(--border);display:none;
+  box-shadow:var(--sh);
 }
 .live-map-wrap.show{display:block}
-#track-map{height:200px}
+#track-map{height:280px}
 .lm-label{
   background:linear-gradient(135deg,#1a1a1a,#0d0d0d);
-  padding:8px 14px;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);
-  display:flex;align-items:center;gap:6px;
+  padding:10px 16px;font-size:12px;font-weight:700;color:rgba(255,255,255,.6);
+  display:flex;align-items:center;justify-content:space-between;gap:6px;
 }
 .lm-label span{color:var(--gold)}
+.lm-open-btn{
+  background:rgba(245,194,0,.15);border:1px solid rgba(245,194,0,.3);
+  color:var(--gold);border-radius:8px;padding:5px 12px;
+  font-size:11px;font-weight:800;cursor:pointer;transition:all .2s;
+  white-space:nowrap;
+}
+.lm-open-btn:hover{background:rgba(245,194,0,.25)}
+.lm-route-info{
+  background:var(--card);padding:10px 16px;
+  display:flex;gap:20px;border-top:1px solid var(--border);
+}
+.lm-stat{display:flex;flex-direction:column;gap:2px}
+.lm-stat-val{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;color:var(--ink)}
+.lm-stat-lbl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
 
 /* ─── WISHLIST ─── */
 .wish-empty{
@@ -1875,8 +1890,16 @@ function renderTrackResult(order){
       </div>
       <div class="tr-total"><span>Total</span><span>K${order.total?.toFixed(0)||0}</span></div>
       <div class="live-map-wrap" id="live-map-wrap">
-        <div class="lm-label">🗺️ Delivery to: <span id="lm-updated">${order.town||'Lusaka'}</span></div>
+        <div class="lm-label">
+          <span>🗺️ Delivery to: <span id="lm-updated" style="color:var(--gold)">${order.town||'Lusaka'}</span></span>
+          <button class="lm-open-btn" id="lm-open-btn" onclick="openDeliveryInMaps()">Open in Maps ↗</button>
+        </div>
         <div id="track-map"></div>
+        <div class="lm-route-info" id="lm-route-info" style="display:none">
+          <div class="lm-stat"><div class="lm-stat-val" id="lm-dist">—</div><div class="lm-stat-lbl">Distance</div></div>
+          <div class="lm-stat"><div class="lm-stat-val" id="lm-eta">—</div><div class="lm-stat-lbl">Est. Drive</div></div>
+          <div class="lm-stat" style="margin-left:auto"><div class="lm-stat-val" style="font-size:13px" id="lm-status-badge">🚚 On the way</div><div class="lm-stat-lbl">Status</div></div>
+        </div>
       </div>
     </div>`;
   if(order.status==='dispatched'||order.status==='delivered') showDeliveryMap(order);
@@ -2222,17 +2245,31 @@ window.notifyCustomer = function(orderId){
 ════════════════════ */
 let trackMap=null, custMarker=null, storeMarker=null, routeLine=null;
 const STORE_LAT=-15.4167, STORE_LNG=28.2900;
+let _deliveryOrder = null;
+
+window.openDeliveryInMaps = function(){
+  if(!_deliveryOrder) return;
+  const dest = [_deliveryOrder.address,_deliveryOrder.area,_deliveryOrder.town,'Zambia'].filter(Boolean).join(', ');
+  const origin = 'COMESA Police Market, Lusaka, Zambia';
+  window.open(`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(dest)}&travelmode=driving`,'_blank');
+};
+
+function haversineKm(lat1,lng1,lat2,lng2){
+  const R=6371, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
 
 function initTrackMap(){
   if(trackMap) return;
   trackMap = L.map('track-map',{zoomControl:true,attributionControl:false,zoomSnap:0.5});
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19,subdomains:'abcd'}).addTo(trackMap);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:19,subdomains:'abcd'}).addTo(trackMap);
   const storeIcon = L.divIcon({
-    html:`<div style="width:38px;height:38px;border-radius:50% 50% 50% 0;background:#f5c200;border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:17px;transform:rotate(-45deg)"><span style="transform:rotate(45deg)">🏪</span></div>`,
-    iconSize:[38,38],iconAnchor:[19,38],popupAnchor:[0,-42],className:''
+    html:`<div style="width:42px;height:42px;border-radius:50%;background:#f5c200;border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font-size:20px;">🏪</div>`,
+    iconSize:[42,42],iconAnchor:[21,42],popupAnchor:[0,-46],className:''
   });
   storeMarker = L.marker([STORE_LAT,STORE_LNG],{icon:storeIcon}).addTo(trackMap)
-    .bindPopup(`<div style="font-family:'Outfit',sans-serif"><div style="font-weight:800;font-size:13px;color:#c49a00;margin-bottom:2px">🏆 CHAMP ZONE Sports</div><div style="font-size:11px;color:#555">COMESA, Lusaka, Zambia</div></div>`,{maxWidth:180});
+    .bindPopup(`<div style="font-family:'Outfit',sans-serif;padding:4px"><div style="font-weight:800;font-size:13px;color:#c49a00">🏆 CHAMP ZONE Sports</div><div style="font-size:11px;color:#666;margin-top:2px">COMESA, Lusaka</div></div>`,{maxWidth:180});
 }
 
 async function geocodeAddress(address){
@@ -2245,29 +2282,55 @@ async function geocodeAddress(address){
 }
 
 async function showDeliveryMap(order){
+  _deliveryOrder = order;
   const mapWrap = document.getElementById('live-map-wrap');
   if(!mapWrap) return;
   mapWrap.classList.add('show');
-  initTrackMap();
-  setTimeout(()=>trackMap.invalidateSize(),120);
-  trackMap.setView([STORE_LAT,STORE_LNG],13);
   const el = document.getElementById('lm-updated');
-  if(el) el.textContent='Finding your address…';
+  if(el) el.textContent = 'Finding address…';
+
   const addrStr = [order.address,order.area,order.town,'Zambia'].filter(Boolean).join(', ');
-  const coords  = await geocodeAddress(addrStr);
-  if(!coords){ if(el) el.textContent='Address not found'; return; }
-  const custIcon = L.divIcon({
-    html:`<div style="position:relative;width:44px;height:44px"><div style="position:absolute;inset:0;border-radius:50%;background:rgba(245,194,0,.2);animation:pulseGold 1.5s infinite"></div><div style="position:absolute;inset:5px;border-radius:50% 50% 50% 0;background:#f5c200;border:3px solid #fff;box-shadow:0 3px 12px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:16px;transform:rotate(-45deg)"><span style="transform:rotate(45deg)">📍</span></div></div>`,
-    iconSize:[44,44],iconAnchor:[22,44],popupAnchor:[0,-48],className:''
-  });
-  if(custMarker) custMarker.remove();
-  custMarker = L.marker([coords.lat,coords.lng],{icon:custIcon,zIndexOffset:1000}).addTo(trackMap)
-    .bindPopup(`<div style="font-family:'Outfit',sans-serif;min-width:150px"><div style="font-weight:800;font-size:13px;color:#c49a00;margin-bottom:3px">📦 Delivery Address</div><div style="font-size:11px;color:#555">${order.address}${order.area?', '+order.area:''}<br>${order.town}</div></div>`,{maxWidth:200});
-  if(routeLine) routeLine.remove();
-  routeLine = L.polyline([[STORE_LAT,STORE_LNG],[coords.lat,coords.lng]],{color:'#f5c200',weight:2.5,opacity:.6,dashArray:'8,8'}).addTo(trackMap);
-  const bounds = L.latLngBounds([[STORE_LAT,STORE_LNG],[coords.lat,coords.lng]]);
-  trackMap.fitBounds(bounds,{padding:[52,52],maxZoom:15});
-  if(el) el.textContent=`${order.town}${order.area?', '+order.area:''}`;
+  const coords = await geocodeAddress(addrStr);
+
+  if(!coords){
+    // Fallback: show Google Maps iframe with just the destination
+    if(el) el.textContent = order.town||'Lusaka';
+    const mapDiv = document.getElementById('track-map');
+    if(mapDiv){
+      const dest = encodeURIComponent(addrStr);
+      mapDiv.innerHTML = `<iframe
+        width="100%" height="280" frameborder="0" style="border:0;display:block"
+        src="https://maps.google.com/maps?q=${dest}&output=embed&z=14"
+        allowfullscreen loading="lazy"></iframe>`;
+    }
+    return;
+  }
+
+  if(el) el.textContent = `${order.town||'Lusaka'}${order.area?', '+order.area:''}`;
+
+  // Show Google Maps iframe with driving directions
+  const mapDiv = document.getElementById('track-map');
+  if(mapDiv){
+    const origin = encodeURIComponent('COMESA Police Market, Lusaka, Zambia');
+    const dest = encodeURIComponent(addrStr);
+    mapDiv.innerHTML = `<iframe
+      width="100%" height="280" frameborder="0" style="border:0;display:block"
+      src="https://maps.google.com/maps?saddr=${origin}&daddr=${dest}&output=embed"
+      allowfullscreen loading="lazy"></iframe>`;
+  }
+
+  // Calculate straight-line distance & estimated drive time
+  const distKm = haversineKm(STORE_LAT,STORE_LNG,coords.lat,coords.lng);
+  const driveKm = distKm * 1.35; // road factor
+  const etaMins = Math.round(driveKm / 0.5); // ~30km/h city speed
+  const distEl = document.getElementById('lm-dist');
+  const etaEl  = document.getElementById('lm-eta');
+  const routeInfo = document.getElementById('lm-route-info');
+  const statusBadge = document.getElementById('lm-status-badge');
+  if(distEl) distEl.textContent = driveKm.toFixed(1)+' km';
+  if(etaEl)  etaEl.textContent  = etaMins < 60 ? etaMins+'min' : Math.floor(etaMins/60)+'h '+(etaMins%60)+'min';
+  if(statusBadge) statusBadge.textContent = order.status==='delivered'?'✅ Delivered':'🚚 On the way';
+  if(routeInfo) routeInfo.style.display = 'flex';
 }
 
 window.navigateToCustomer = function(encodedAddr){
