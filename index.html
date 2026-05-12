@@ -1694,7 +1694,12 @@ function showCheckoutForm(){
   wrap.classList.add('open');
 }
 
+let _submittingOrder = false;
 window.submitOrder = async function(){
+  if(_submittingOrder) return;
+  _submittingOrder = true;
+  const btn = document.querySelector('.af-submit');
+  if(btn){ btn.disabled=true; btn.textContent='Placing order...'; }
   const name    = document.getElementById('co-name')?.value.trim();
   const phone   = document.getElementById('co-phone')?.value.trim();
   const address = document.getElementById('co-address')?.value.trim();
@@ -1702,9 +1707,17 @@ window.submitOrder = async function(){
   const town    = document.getElementById('co-town')?.value.trim() || 'Lusaka';
   const notes   = document.getElementById('co-notes')?.value.trim();
   const payment  = document.getElementById('co-payment')?.value || 'Cash on Delivery';
-  if(!name||!phone||!address){ toast('⚠️ Please fill all required fields'); return; }
+  if(!name||!phone||!address){
+    toast('⚠️ Please fill all required fields');
+    if(btn){ btn.disabled=false; btn.textContent='✅ Place Order via WhatsApp'; }
+    _submittingOrder = false; return;
+  }
   const cleanPhone = phone.replace(/\D/g,'');
-  if(cleanPhone.length < 9){ toast('⚠️ Enter a valid phone number'); return; }
+  if(cleanPhone.length < 9){
+    toast('⚠️ Enter a valid phone number');
+    if(btn){ btn.disabled=false; btn.textContent='✅ Place Order via WhatsApp'; }
+    _submittingOrder = false; return;
+  }
   const orderNum = 'CZ-' + Date.now().toString(36).toUpperCase().slice(-4) + Math.floor(100+Math.random()*900);
   const subtotal = cart.reduce((s,c)=>s+((c.qty||1)*c.price),0);
   const delivery = subtotal>=500?0:50;
@@ -1716,13 +1729,17 @@ window.submitOrder = async function(){
       status:'pending', archived:false,
       createdAt: serverTimestamp()
     });
-  } catch(err){ toast('⚠️ Could not save order: '+err.message); console.warn('Order save error:', err); return; }
+  } catch(err){ toast('⚠️ Could not save order: '+err.message); console.warn('Order save error:', err);
+    if(btn){ btn.disabled=false; btn.textContent='✅ Place Order via WhatsApp'; }
+    _submittingOrder = false; return;
+  }
   const itemsText = cart.map(c=>`• ${c.name} ×${c.qty||1} = K${((c.qty||1)*c.price).toFixed(0)}`).join('\n');
   const msg = `🏆 *CHAMP ZONE Sports — New Order*\n\n*Order #:* ${orderNum}\n*Name:* ${name}\n*Phone:* ${phone}\n*Address:* ${address}${area?', '+area:''}, ${town}\n\n*Items:*\n${itemsText}\n\n*Subtotal:* K${subtotal.toFixed(0)}\n*Delivery:* ${delivery===0?'FREE':'K'+delivery}\n*Payment:* ${payment}\n*TOTAL:* K${(subtotal+delivery).toFixed(0)}\n\n${notes?'*Notes:* '+notes+'\n\n':''}Thank you for shopping with CHAMP ZONE! 🏆`;
   window.open(`https://wa.me/${adminWA}?text=${encodeURIComponent(msg)}`,'_blank');
   cart = []; saveCart(); updateCartUI();
   closeModal({ target: document.getElementById('modal-wrap') });
   toast('🎉 Order placed! '+orderNum);
+  _submittingOrder = false;
 };
 
 /* ════════════════════
@@ -1731,7 +1748,6 @@ window.submitOrder = async function(){
 window.openModal = function(id){
   const p = PRODUCTS.find(x=>x._id===id);
   if(!p) return;
-  console.log('🖼️ Product image field:', p.image);
   const inCart = cart.some(c=>c._id===id);
   const inWish = wishlist.includes(id);
   const sizes = (p.sizes||'').split(',').map(s=>s.trim()).filter(Boolean);
