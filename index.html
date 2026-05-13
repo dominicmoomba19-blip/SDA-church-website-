@@ -1752,9 +1752,44 @@ window.submitOrder = async function(){
   const msg = `🏆 *CHAMP ZONE Sports — New Order*\n\n*Order #:* ${orderNum}\n*Name:* ${name}\n*Phone:* ${phone}\n*Address:* ${address}${area?', '+area:''}, ${town}\n\n*Items:*\n${itemsText}\n\n*Subtotal:* K${subtotal.toFixed(0)}\n*Delivery:* ${delivery===0?'FREE':'K'+delivery}\n*Payment:* ${payment}\n*TOTAL:* K${(subtotal+delivery).toFixed(0)}\n\n${notes?'*Notes:* '+notes+'\n\n':''}Thank you for shopping with CHAMP ZONE! 🏆`;
   window.open(`https://wa.me/${adminWA}?text=${encodeURIComponent(msg)}`,'_blank');
   cart = []; saveCart(); updateCartUI();
-  closeModal({ target: document.getElementById('modal-wrap') });
-  toast('🎉 Order placed! '+orderNum);
   _submittingOrder = false;
+
+  // Show confirmation screen instead of instantly closing
+  document.getElementById('pm-content').innerHTML = `
+    <div style="padding:32px 24px;text-align:center">
+      <div style="font-size:64px;margin-bottom:16px">🎉</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--ink);margin-bottom:6px">Order Placed!</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:28px">Your order has been sent to WhatsApp. Save your order number to track your delivery.</div>
+
+      <div style="background:var(--bg);border:2px dashed var(--gold);border-radius:14px;padding:20px;margin-bottom:20px">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">Your Order Number</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--gold-dk);letter-spacing:2px;margin-bottom:14px" id="conf-ordernum">${orderNum}</div>
+        <button onclick="
+          navigator.clipboard.writeText('${orderNum}').then(()=>{
+            this.textContent='✅ Copied!';
+            setTimeout(()=>this.textContent='📋 Copy Order Number',1800);
+          }).catch(()=>{
+            const el=document.getElementById('conf-ordernum');
+            const r=document.createRange();r.selectNode(el);
+            window.getSelection().removeAllRanges();window.getSelection().addRange(r);
+            document.execCommand('copy');
+            this.textContent='✅ Copied!';
+            setTimeout(()=>this.textContent='📋 Copy Order Number',1800);
+          });
+        " style="background:linear-gradient(135deg,#1a1a1a,#0d0d0d);color:var(--gold);border:1px solid rgba(245,194,0,.3);border-radius:10px;padding:11px 22px;font-size:13px;font-weight:800;cursor:pointer;width:100%">
+          📋 Copy Order Number
+        </button>
+      </div>
+
+      <div style="font-size:12px;color:var(--muted);margin-bottom:24px;line-height:1.6">
+        Use <strong style="color:var(--ink)">${orderNum}</strong> to track your delivery on the <strong style="color:var(--ink)">Track</strong> tab.
+      </div>
+
+      <button onclick="document.getElementById('modal-wrap').classList.remove('open')"
+        style="width:100%;background:linear-gradient(135deg,var(--gold-lt),var(--gold));color:#000;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:900;cursor:pointer;letter-spacing:.3px">
+        Done
+      </button>
+    </div>`;
 };
 
 /* ════════════════════
