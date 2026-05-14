@@ -1454,9 +1454,22 @@ onSnapshot(collection(db, COLL), snap => {
 
 /* ── Load orders ── */
 let _ordersUpdating = false;
-onSnapshot(collection(db, ORDERS_COLL), snap => {
+onSnapshot(collection(db, ORDERS_COLL), async snap => {
   const newOrders = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
   ORDERS = newOrders;
+
+  // Auto-delete delivered orders older than 30 days
+  const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+  const expired = newOrders.filter(o =>
+    o.status === 'delivered' &&
+    o.createdAt?.seconds &&
+    (o.createdAt.seconds * 1000) < thirtyDaysAgo
+  );
+  if(expired.length){
+    await Promise.all(expired.map(o => deleteDoc(doc(db, ORDERS_COLL, o._id))));
+    console.log(`🗑️ Auto-deleted ${expired.length} completed order(s) older than 30 days`);
+  }
+
   if (_ordersUpdating) return;
   const tab = document.getElementById('tab-orders');
   if (tab && tab.style.display !== 'none') renderAdmOrders();
