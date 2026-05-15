@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Champ Zone Sports — Lusaka, Zambia</title>
+<title>Champ Zone Sports — Lusaka & Kitwe, Zambia</title>
 <meta property="og:title" content="Champ Zone Sports">
-<meta property="og:description" content="Lusaka's premier sportswear store. Jerseys, boots, balls & more — delivered across Zambia.">
+<meta property="og:description" content="Zambia's premier sportswear store — 2 locations in Lusaka & Kitwe. Jerseys, boots, balls & more — delivered across Zambia.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://res.cloudinary.com/ddcbqpe6l/image/upload/myd5lgkgae1u4pimcn5u.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -1336,7 +1336,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none}
 
 <!-- PROMO BAR -->
 <div class="promo-bar">
-  🏆 <b>CHAMP ZONE Sports</b> — Zambia's Premier Sportswear Store · <b>COMESA, Lusaka</b> · Free delivery on orders over K500
+  🏆 <b>CHAMP ZONE Sports</b> — Zambia's Premier Sportswear Store · <b>📍 Lusaka & Kitwe</b> · Free delivery on orders over K500
 </div>
 
 <!-- HEADER -->
@@ -1442,7 +1442,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none}
       </div>
       <div class="hero-eyebrow">⚡ New Season</div>
       <h1>GEAR UP<br>FOR <span>GLORY</span></h1>
-      <p>Premium sportswear for champions. Jerseys, boots, balls & more — delivered across Lusaka.</p>
+      <p>Premium sportswear for champions. Jerseys, boots, balls & more — delivered across Zambia.</p>
       <div class="hero-btns">
         <button class="btn-primary" onclick="go('shop')">🛍️ Shop Now</button>
         <button class="btn-ghost" onclick="go('track')">📦 Track Order</button>
@@ -1581,18 +1581,20 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none}
   <div class="section" id="sec-about">
     <div class="about-banner">
       <h2>CHAMP ZONE<br><span>Sports ZM</span></h2>
-      <p>Lusaka's premier sportswear destination. We stock quality football jerseys, boots, balls, gym wear and more at competitive prices.</p>
+      <p>Zambia's premier sportswear destination — now in <b>Lusaka & Kitwe</b>. Quality football jerseys, boots, balls, gym wear and more at competitive prices.</p>
     </div>
     <div class="info-cards">
-      <div class="info-card">
+      <div class="info-card" style="grid-column:1/-1;background:linear-gradient(135deg,rgba(245,194,0,.08),rgba(245,194,0,.02));border:1px solid rgba(245,194,0,.25);">
         <div class="ic-ico">📍</div>
-        <div class="ic-title">Location</div>
-        <div class="ic-val">COMESA Police 1st Floor, Shop R9, Lusaka</div>
+        <div class="ic-title">Lusaka Branch</div>
+        <div class="ic-val">COMESA Police 1st Floor, Shop R9<br>Lumumba Road, Lusaka</div>
+        <div class="ic-val" style="margin-top:6px;font-weight:700;color:#f5c200;">+260 976 457 342</div>
       </div>
-      <div class="info-card">
-        <div class="ic-ico">📞</div>
-        <div class="ic-title">Phone</div>
-        <div class="ic-val">+260 976 457 342</div>
+      <div class="info-card" style="grid-column:1/-1;background:linear-gradient(135deg,rgba(245,194,0,.08),rgba(245,194,0,.02));border:1px solid rgba(245,194,0,.25);">
+        <div class="ic-ico">📍</div>
+        <div class="ic-title">Kitwe Branch</div>
+        <div class="ic-val">Nkana Mall, 1st Floor<br>Shop S17, Kitwe</div>
+        <div class="ic-val" style="margin-top:6px;font-weight:700;color:#f5c200;">+260 963 402 595</div>
       </div>
       <div class="info-card">
         <div class="ic-ico">✉️</div>
@@ -1606,7 +1608,10 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none}
       </div>
     </div>
     <button class="contact-btn contact-wa" onclick="window.open('https://wa.me/260976457342','_blank')">
-      💬 WhatsApp Us
+      💬 WhatsApp — Lusaka
+    </button>
+    <button class="contact-btn contact-wa" onclick="window.open('https://wa.me/260963402595','_blank')" style="background:linear-gradient(135deg,#1a7a3a,#25a550);">
+      💬 WhatsApp — Kitwe
     </button>
     <button class="contact-btn contact-fb" onclick="window.open('https://www.facebook.com/profile.php?id=61575219895282','_blank')">
       👍 Follow on Facebook
@@ -1646,6 +1651,11 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none}
       <div class="adm-header">
         <h2>Admin <span>Panel</span></h2>
         <button class="adm-out" onclick="adminLogout()">🚪 Logout</button>
+      </div>
+      <div style="display:flex;gap:8px;padding:0 0 12px;align-items:center;">
+        <span style="font-size:12px;color:rgba(255,255,255,.5);font-weight:600;">BRANCH:</span>
+        <button id="br-lusaka" onclick="setBranch('lusaka')" style="flex:1;padding:7px 10px;border-radius:8px;border:1.5px solid #f5c200;background:#f5c200;color:#000;font-size:12px;font-weight:700;cursor:pointer;">📍 Lusaka</button>
+        <button id="br-kitwe"  onclick="setBranch('kitwe')"  style="flex:1;padding:7px 10px;border-radius:8px;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.6);font-size:12px;font-weight:700;cursor:pointer;">📍 Kitwe</button>
       </div>
       <div class="adm-tabs">
         <button class="adm-tab active" id="tab-btn-products" onclick="admTab('products')">📦 Products</button>
@@ -1883,7 +1893,18 @@ let ORDERS   = [];
 let cart     = JSON.parse(localStorage.getItem('cz_cart')    || '[]');
 let wishlist = JSON.parse(localStorage.getItem('cz_wishlist') || '[]');
 let currentSort = 'pa', currentSec = 'home';
-const adminWA = '260976457342';
+
+/* ── BRANCHES (defined early — used by adminWA below and map functions) ── */
+let trackMap=null, custMarker=null, storeMarker=null, routeLine=null;
+const BRANCHES = {
+  lusaka: { lat:-15.4167, lng:28.2900, label:'COMESA, Lusaka', addr:'COMESA Police Market, Lusaka, Zambia', wa:'260976457342' },
+  kitwe:  { lat:-12.8024, lng:28.2132, label:'Nkana Mall, Kitwe', addr:'Nkana Mall, Kitwe, Zambia', wa:'260963402595' }
+};
+let ACTIVE_BRANCH = BRANCHES.lusaka;
+let ACTIVE_BRANCH_KEY = 'lusaka';
+let _deliveryOrder = null;
+
+const adminWA = BRANCHES.lusaka.wa; // legacy fallback
 
 const STATUS_ORDER  = ['pending','confirmed','packing','dispatched','delivered'];
 const STATUS_LABELS = {pending:'Pending',confirmed:'Confirmed',packing:'Packing',dispatched:'Out for Delivery',delivered:'Delivered'};
@@ -2148,6 +2169,19 @@ function showCheckoutForm(){
       <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;color:var(--ink);margin-bottom:18px">📦 Checkout Details</div>
       <div class="af-grp"><label>Full Name *</label><input id="co-name" placeholder="Your full name"></div>
       <div class="af-grp"><label>Phone Number *</label><input id="co-phone" type="tel" placeholder="0976 123 456" inputmode="tel"></div>
+      <div class="af-grp" style="margin-bottom:14px;">
+        <label style="display:block;margin-bottom:8px;">Order From Branch *</label>
+        <div style="display:flex;gap:10px;">
+          <label style="flex:1;display:flex;align-items:center;gap:8px;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:var(--bg);font-size:13px;font-weight:600;transition:all .2s" id="co-br-lusaka-lbl">
+            <input type="radio" name="co-branch" id="co-br-lusaka" value="lusaka" checked style="accent-color:#f5c200;width:16px;height:16px;">
+            📍 Lusaka
+          </label>
+          <label style="flex:1;display:flex;align-items:center;gap:8px;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:var(--bg);font-size:13px;font-weight:600;transition:all .2s" id="co-br-kitwe-lbl">
+            <input type="radio" name="co-branch" id="co-br-kitwe" value="kitwe" style="accent-color:#f5c200;width:16px;height:16px;">
+            📍 Kitwe
+          </label>
+        </div>
+      </div>
       <div class="af-grp"><label>Delivery Address *</label><input id="co-address" placeholder="House/Plot number, Street"></div>
       <div class="af-row">
         <div class="af-grp"><label>Area/Compound</label><input id="co-area" placeholder="e.g. Chilenje"></div>
@@ -2186,6 +2220,8 @@ window.submitOrder = async function(){
   const town    = document.getElementById('co-town')?.value.trim() || 'Lusaka';
   const notes   = document.getElementById('co-notes')?.value.trim();
   const payment  = document.getElementById('co-payment')?.value || 'Cash on Delivery';
+  const branchKey = document.querySelector('input[name="co-branch"]:checked')?.value || 'lusaka';
+  const branch = BRANCHES[branchKey];
   if(!name||!phone||!address){
     toast('⚠️ Please fill all required fields');
     if(btn){ btn.disabled=false; btn.textContent='✅ Place Order via WhatsApp'; }
@@ -2203,6 +2239,7 @@ window.submitOrder = async function(){
   try {
     await addDoc(collection(db, ORDERS_COLL), {
       orderNum, customerName:name, phone, address, area, town, notes, payment,
+      branch: branchKey, branchLabel: branch.label,
       items: cart.map(c=>({name:c.name,price:c.price,qty:c.qty||1})),
       subtotal, delivery, total:subtotal+delivery,
       status:'pending', archived:false,
@@ -2213,8 +2250,8 @@ window.submitOrder = async function(){
     _submittingOrder = false; return;
   }
   const itemsText = cart.map(c=>`• ${c.name} ×${c.qty||1} = K${((c.qty||1)*c.price).toFixed(0)}`).join('\n');
-  const msg = `🏆 *CHAMP ZONE Sports — New Order*\n\n*Order #:* ${orderNum}\n*Name:* ${name}\n*Phone:* ${phone}\n*Address:* ${address}${area?', '+area:''}, ${town}\n\n*Items:*\n${itemsText}\n\n*Subtotal:* K${subtotal.toFixed(0)}\n*Delivery:* ${delivery===0?'FREE':'K'+delivery}\n*Payment:* ${payment}\n*TOTAL:* K${(subtotal+delivery).toFixed(0)}\n\n${notes?'*Notes:* '+notes+'\n\n':''}Thank you for shopping with CHAMP ZONE! 🏆`;
-  window.open(`https://wa.me/${adminWA}?text=${encodeURIComponent(msg)}`,'_blank');
+  const msg = `🏆 *CHAMP ZONE Sports — New Order*\n\n*Branch:* ${branch.label}\n*Order #:* ${orderNum}\n*Name:* ${name}\n*Phone:* ${phone}\n*Address:* ${address}${area?', '+area:''}, ${town}\n\n*Items:*\n${itemsText}\n\n*Subtotal:* K${subtotal.toFixed(0)}\n*Delivery:* ${delivery===0?'FREE':'K'+delivery}\n*Payment:* ${payment}\n*TOTAL:* K${(subtotal+delivery).toFixed(0)}\n\n${notes?'*Notes:* '+notes+'\n\n':''}Thank you for shopping with CHAMP ZONE! 🏆`;
+  window.open(`https://wa.me/${branch.wa}?text=${encodeURIComponent(msg)}`,'_blank');
   cart = []; saveCart(); updateCartUI();
   _submittingOrder = false;
 
@@ -2345,8 +2382,54 @@ function renderWishlist(){
 
 window.enquireProduct = function(e, name, price){
   if(e) e.stopPropagation();
-  const msg = `Hi CHAMP ZONE Sports! 👋\n\nI'm interested in *${name}* (K${price}).\n\nPlease send me more details. Thank you!`;
-  window.open(`https://wa.me/${adminWA}?text=${encodeURIComponent(msg)}`,'_blank');
+  const old = document.getElementById('branch-picker');
+  if(old) old.remove();
+
+  const msgText = `Hi CHAMP ZONE Sports! 👋\n\nI'm interested in *${name}* (K${price}).\n\nPlease send me more details. Thank you!`;
+
+  const sheet = document.createElement('div');
+  sheet.id = 'branch-picker';
+  sheet.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);';
+
+  sheet.innerHTML = `
+    <div style="width:100%;max-width:480px;background:#1a1a2e;border-radius:20px 20px 0 0;padding:24px 20px 36px;box-shadow:0 -8px 40px rgba(0,0,0,.5);">
+      <div style="width:40px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:0 auto 20px;"></div>
+      <div style="font-size:14px;color:rgba(255,255,255,.5);font-weight:600;letter-spacing:.05em;margin-bottom:6px;">ENQUIRE ABOUT</div>
+      <div style="font-size:17px;font-weight:800;color:#f5c200;margin-bottom:20px;">${name}</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:14px;">Which branch do you want to contact?</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button id="bp-lusaka" style="width:100%;padding:14px 16px;border-radius:12px;background:linear-gradient(135deg,#1da851,#25d366);border:none;color:#fff;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;">
+          <span style="font-size:18px;">💬</span>
+          <div style="text-align:left;">
+            <div>Lusaka Branch</div>
+            <div style="font-size:12px;font-weight:400;opacity:.85;">COMESA Police, Shop R9 · 0976 457 342</div>
+          </div>
+        </button>
+        <button id="bp-kitwe" style="width:100%;padding:14px 16px;border-radius:12px;background:linear-gradient(135deg,#1a7a3a,#25a550);border:none;color:#fff;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;">
+          <span style="font-size:18px;">💬</span>
+          <div style="text-align:left;">
+            <div>Kitwe Branch</div>
+            <div style="font-size:12px;font-weight:400;opacity:.85;">Nkana Mall, Shop S17 · 0963 402 595</div>
+          </div>
+        </button>
+        <button id="bp-cancel" style="width:100%;padding:12px;border-radius:12px;background:transparent;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);font-size:14px;cursor:pointer;margin-top:2px;">
+          Cancel
+        </button>
+      </div>
+    </div>`;
+
+  sheet.addEventListener('click', ev => { if(ev.target === sheet) sheet.remove(); });
+  document.body.appendChild(sheet);
+
+  document.getElementById('bp-lusaka').addEventListener('click', ()=>{
+    window.open('https://wa.me/260976457342?text='+encodeURIComponent(msgText),'_blank');
+    sheet.remove();
+  });
+  document.getElementById('bp-kitwe').addEventListener('click', ()=>{
+    window.open('https://wa.me/260963402595?text='+encodeURIComponent(msgText),'_blank');
+    sheet.remove();
+  });
+  document.getElementById('bp-cancel').addEventListener('click', ()=> sheet.remove());
 };
 
 /* ════════════════════
@@ -2653,6 +2736,9 @@ function renderAdmOrders(){
     return tb-ta;
   });
 
+  // Filter by active branch (orders with no branch field = legacy Lusaka orders)
+  orders = orders.filter(o => (o.branch || 'lusaka') === ACTIVE_BRANCH_KEY);
+
   // Summary bar
   const sumBar = document.getElementById('ao-summary-bar');
   if(sumBar){
@@ -2742,14 +2828,11 @@ window.notifyCustomer = function(orderId){
 /* ════════════════════
    MAP
 ════════════════════ */
-let trackMap=null, custMarker=null, storeMarker=null, routeLine=null;
-const STORE_LAT=-15.4167, STORE_LNG=28.2900;
-let _deliveryOrder = null;
-
 window.openDeliveryInMaps = function(){
   if(!_deliveryOrder) return;
   const dest = [_deliveryOrder.address,_deliveryOrder.area,_deliveryOrder.town,'Zambia'].filter(Boolean).join(', ');
-  const origin = 'COMESA Police Market, Lusaka, Zambia';
+  const orderBranch = (_deliveryOrder.branch && BRANCHES[_deliveryOrder.branch]) ? BRANCHES[_deliveryOrder.branch] : ACTIVE_BRANCH;
+  const origin = orderBranch.addr;
   window.open(`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(dest)}&travelmode=driving`,'_blank');
 };
 
@@ -2767,8 +2850,8 @@ function initTrackMap(){
     html:`<div style="width:42px;height:42px;border-radius:50%;background:#f5c200;border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font-size:20px;">🏪</div>`,
     iconSize:[42,42],iconAnchor:[21,42],popupAnchor:[0,-46],className:''
   });
-  storeMarker = L.marker([STORE_LAT,STORE_LNG],{icon:storeIcon}).addTo(trackMap)
-    .bindPopup(`<div style="font-family:'Outfit',sans-serif;padding:4px"><div style="font-weight:800;font-size:13px;color:#c49a00">🏆 CHAMP ZONE Sports</div><div style="font-size:11px;color:#666;margin-top:2px">COMESA, Lusaka</div></div>`,{maxWidth:180});
+  storeMarker = L.marker([ACTIVE_BRANCH.lat,ACTIVE_BRANCH.lng],{icon:storeIcon}).addTo(trackMap)
+    .bindPopup(`<div style="font-family:'Outfit',sans-serif;padding:4px"><div style="font-weight:800;font-size:13px;color:#c49a00">🏆 CHAMP ZONE Sports</div><div style="font-size:11px;color:#666;margin-top:2px">${ACTIVE_BRANCH.label}</div></div>`,{maxWidth:180});
 }
 
 async function geocodeAddress(address){
@@ -2782,6 +2865,7 @@ async function geocodeAddress(address){
 
 async function showDeliveryMap(order){
   _deliveryOrder = order;
+  const orderBranch = (order.branch && BRANCHES[order.branch]) ? BRANCHES[order.branch] : ACTIVE_BRANCH;
   const mapWrap = document.getElementById('live-map-wrap');
   if(!mapWrap) return;
   mapWrap.classList.add('show');
@@ -2790,38 +2874,30 @@ async function showDeliveryMap(order){
 
   const addrStr = [order.address,order.area,order.town,'Zambia'].filter(Boolean).join(', ');
   const coords = await geocodeAddress(addrStr);
+  const mapDiv = document.getElementById('track-map');
 
   if(!coords){
-    // Fallback: show Google Maps iframe with just the destination
     if(el) el.textContent = order.town||'Lusaka';
-    const mapDiv = document.getElementById('track-map');
     if(mapDiv){
       const dest = encodeURIComponent(addrStr);
-      mapDiv.innerHTML = `<iframe
-        width="100%" height="280" frameborder="0" style="border:0;display:block"
-        src="https://maps.google.com/maps?q=${dest}&output=embed&z=14"
-        allowfullscreen loading="lazy"></iframe>`;
+      mapDiv.innerHTML = `<iframe width="100%" height="280" frameborder="0" style="border:0;display:block"
+        src="https://maps.google.com/maps?q=${dest}&output=embed&z=14" allowfullscreen loading="lazy"></iframe>`;
     }
     return;
   }
 
   if(el) el.textContent = `${order.town||'Lusaka'}${order.area?', '+order.area:''}`;
 
-  // Show Google Maps iframe with driving directions
-  const mapDiv = document.getElementById('track-map');
   if(mapDiv){
-    const origin = encodeURIComponent('COMESA Police Market, Lusaka, Zambia');
+    const origin = encodeURIComponent(orderBranch.addr);
     const dest = encodeURIComponent(addrStr);
-    mapDiv.innerHTML = `<iframe
-      width="100%" height="280" frameborder="0" style="border:0;display:block"
-      src="https://maps.google.com/maps?saddr=${origin}&daddr=${dest}&output=embed"
-      allowfullscreen loading="lazy"></iframe>`;
+    mapDiv.innerHTML = `<iframe width="100%" height="280" frameborder="0" style="border:0;display:block"
+      src="https://maps.google.com/maps?saddr=${origin}&daddr=${dest}&output=embed" allowfullscreen loading="lazy"></iframe>`;
   }
 
-  // Calculate straight-line distance & estimated drive time
-  const distKm = haversineKm(STORE_LAT,STORE_LNG,coords.lat,coords.lng);
-  const driveKm = distKm * 1.35; // road factor
-  const etaMins = Math.round(driveKm / 0.5); // ~30km/h city speed
+  const distKm = haversineKm(orderBranch.lat,orderBranch.lng,coords.lat,coords.lng);
+  const driveKm = distKm * 1.35;
+  const etaMins = Math.round(driveKm / 0.5);
   const distEl = document.getElementById('lm-dist');
   const etaEl  = document.getElementById('lm-eta');
   const routeInfo = document.getElementById('lm-route-info');
@@ -2834,7 +2910,7 @@ async function showDeliveryMap(order){
 
 window.navigateToCustomer = function(encodedAddr){
   const dest   = decodeURIComponent(encodedAddr);
-  const origin = 'COMESA Police Market, Lusaka, Zambia';
+  const origin = ACTIVE_BRANCH.addr;
   window.open(`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(dest)}&travelmode=driving`,'_blank');
 };
 
@@ -2842,9 +2918,9 @@ window.navigateToCustomer = function(encodedAddr){
    PLAN ROUTE
 ════════════════════ */
 window.planDeliveryRoute = function(){
-  const active = ORDERS.filter(o=>!o.archived&&o.status!=='delivered');
+  const active = ORDERS.filter(o=>!o.archived&&o.status!=='delivered'&&(o.branch||'lusaka')===ACTIVE_BRANCH_KEY);
   if(!active.length){ toast('📭 No active orders'); return; }
-  const origin = encodeURIComponent('COMESA Police Market, Lusaka, Zambia');
+  const origin = encodeURIComponent(ACTIVE_BRANCH.addr);
   if(active.length===1){
     const addr = [active[0].address,active[0].area,active[0].town,'Zambia'].filter(Boolean).join(', ');
     window.open(`https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${encodeURIComponent(addr)}&travelmode=driving`,'_blank');
@@ -2856,6 +2932,21 @@ window.planDeliveryRoute = function(){
   window.open(`https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${encodeURIComponent(destination)}&waypoints=${encodeURIComponent(waypoints)}&travelmode=driving`,'_blank');
   if(active.length>9) toast(`⚠️ Showing first 9 of ${active.length} orders`);
   else toast(`🗺️ Route planned for ${active.length} deliveries`);
+};
+
+/* ── BRANCH SELECTOR ── */
+window.setBranch = function(key){
+  ACTIVE_BRANCH = BRANCHES[key];
+  ACTIVE_BRANCH_KEY = key;
+  document.getElementById('br-lusaka').style.cssText = key==='lusaka'
+    ? 'flex:1;padding:7px 10px;border-radius:8px;border:1.5px solid #f5c200;background:#f5c200;color:#000;font-size:12px;font-weight:700;cursor:pointer;'
+    : 'flex:1;padding:7px 10px;border-radius:8px;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.6);font-size:12px;font-weight:700;cursor:pointer;';
+  document.getElementById('br-kitwe').style.cssText = key==='kitwe'
+    ? 'flex:1;padding:7px 10px;border-radius:8px;border:1.5px solid #f5c200;background:#f5c200;color:#000;font-size:12px;font-weight:700;cursor:pointer;'
+    : 'flex:1;padding:7px 10px;border-radius:8px;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.6);font-size:12px;font-weight:700;cursor:pointer;';
+  if(trackMap){ trackMap.remove(); trackMap=null; storeMarker=null; }
+  renderAdmOrders();
+  toast(`📍 Branch: ${ACTIVE_BRANCH.label}`);
 };
 
 /* ── INIT ── */
